@@ -11,6 +11,14 @@ import UIKit
 class CardView: UIView {
     let imageView = UIImageView(image: #imageLiteral(resourceName: "lady5c"))
     
+    var cardViewModel: CardViewModel! {
+        didSet{
+            imageView.image = UIImage(named: cardViewModel.imageName)
+            informationLabel.attributedText = cardViewModel.attributedText
+            informationLabel.textAlignment = cardViewModel.textAlignment
+        }
+    }
+    
     let informationLabel: UILabel = {
        let lbl = UILabel()
         lbl.textColor = UIColor.white
@@ -27,15 +35,6 @@ class CardView: UIView {
         setupViews()
         setupPanGesture()
         
-    }
-    
-    func setupCardView(user: User){
-        imageView.image = UIImage(named: user.imageName)
-        
-        let attributedText = NSMutableAttributedString(string: user.name, attributes: [.font: UIFont.systemFont(ofSize: 28, weight: .heavy)])
-        attributedText.append(NSAttributedString(string: "  \(user.age)", attributes: [.font: UIFont.systemFont(ofSize: 24, weight: .regular)]))
-        attributedText.append(NSAttributedString(string: "\n\(user.profession)", attributes: [.font: UIFont.systemFont(ofSize: 20, weight: .light)]))
-        informationLabel.attributedText = attributedText
     }
     
     fileprivate func setupPanGesture(){
@@ -58,15 +57,12 @@ class CardView: UIView {
         
         UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             if shouldDismissCard {
-//                let offScreenTransform = self.transform.translatedBy(x: 1000, y: 0)
-//                self.transform = offScreenTransform
                 self.frame = CGRect(x: 1000 * translateDirection, y: 0, width: self.frame.width, height: self.frame.height)
             } else {
                 self.transform = .identity
             }
         }) {(_ ) in
             self.transform = .identity
-//            self.frame = CGRect(x: 0, y: 0, width: self.superview!.frame.width, height: self.superview!.frame.height)
             if shouldDismissCard {
                 self.removeFromSuperview()
             }

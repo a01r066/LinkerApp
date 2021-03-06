@@ -6,11 +6,19 @@
 //  Copyright © 2021 Thanh Minh. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
-struct User {
+struct User: ProducesCardViewModel {
     let name: String
     let age: Int
     let profession: String
     let imageName: String
+    
+    func toCardViewModel() -> CardViewModel {
+        let attributedText = NSMutableAttributedString(string: name, attributes: [.font: UIFont.systemFont(ofSize: 28, weight: .heavy)])
+        attributedText.append(NSAttributedString(string: "  \(age)", attributes: [.font: UIFont.systemFont(ofSize: 24, weight: .regular)]))
+        attributedText.append(NSAttributedString(string: "\n\(profession)", attributes: [.font: UIFont.systemFont(ofSize: 20, weight: .light)]))
+        
+        return CardViewModel(imageName: imageName, attributedText: attributedText, textAlignment: .left)
+    }
 }

@@ -10,14 +10,18 @@ import UIKit
 
 class HomeController: UIViewController {
     let topNavStackView = TopNavStackView()
-    let blueView = UIView()
     let cardsDeskView = UIView()
     let bottomBarStackView = BottomBarStackView()
     
-    let users = [
-        User(name: "Kelly", age: 23, profession: "Fashion Model", imageName: "lady4c"),
-        User(name: "Shally", age: 25, profession: "Designer", imageName: "lady5c")
-    ]
+    let cardViewModels: [CardViewModel] = {
+        let producers = [
+            User(name: "Kelly", age: 23, profession: "Fashion Model", imageName: "lady4c"),
+            User(name: "Shally", age: 25, profession: "Designer", imageName: "lady5c"),
+            Advertiser(title: "Slide Out Menu", brandName: "Let's Build That App", posterName: "slide_out_menu_poster")
+        ] as [ProducesCardViewModel]
+        let viewModels = producers.map({return $0.toCardViewModel()})
+        return viewModels
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,15 +32,13 @@ class HomeController: UIViewController {
     
     //MARK:- fileprivate
     fileprivate func setupDummyCards(){
-        users.forEach { (user) in
+        cardViewModels.forEach { (cardVM) in
             let cardView = CardView(frame: .zero)
-            cardView.setupCardView(user: user)
+            cardView.cardViewModel = cardVM
             
             cardsDeskView.addSubview(cardView)
             cardView.fillSuperview()
         }
-        
-        
     }
     
     // MARK:- fileprivate
