@@ -8,7 +8,12 @@
 
 import UIKit
 
+protocol TopNavStackViewDelegate {
+    func didHandleRegister()
+}
+
 class TopNavStackView: UIStackView {
+    var delegate: TopNavStackViewDelegate?
 
     let profileBtn = UIButton(type: .system)
     let trendingBtn = UIButton(type: .system)
@@ -33,6 +38,12 @@ class TopNavStackView: UIStackView {
         
         isLayoutMarginsRelativeArrangement = true
         layoutMargins = .init(top: 0, left: 16, bottom: 0, right: 16)
+        
+        profileBtn.addTarget(self, action: #selector(register), for: .touchUpInside)
+    }
+    
+    @objc func register(){
+        delegate?.didHandleRegister()
     }
     
     required init(coder: NSCoder) {

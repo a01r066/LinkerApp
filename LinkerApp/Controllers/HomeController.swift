@@ -27,6 +27,8 @@ class HomeController: UIViewController {
         super.viewDidLoad()
         setupViews()
         setupDummyCards()
+        
+        topNavStackView.delegate = self
     }
     
     
@@ -53,9 +55,12 @@ class HomeController: UIViewController {
         overallStackView.layoutMargins = .init(top: 0, left: 12, bottom: 0, right: 12)
         overallStackView.bringSubviewToFront(cardsDeskView)
     }
-    
-    
+}
 
-
+extension HomeController: TopNavStackViewDelegate {
+    func didHandleRegister(){
+        let registrationController = RegistrationController()
+        present(registrationController, animated: true)
+    }
 }
 
