@@ -1,27 +1,24 @@
 //
 //  CustomTextField.swift
-//  LinkerApp
+//  SwipeMatchFirestoreLBTA
 //
-//  Created by Thanh Minh on 3/7/21.
-//  Copyright © 2021 Thanh Minh. All rights reserved.
+//  Created by Brian Voong on 11/10/18.
+//  Copyright © 2018 Brian Voong. All rights reserved.
 //
 
 import UIKit
 
-class CustomTextfield: UITextField {
+class CustomTextField: UITextField {
+    
     let padding: CGFloat
+    let height: CGFloat
     
-    init(padding: CGFloat) {
+    init(padding: CGFloat, height: CGFloat) {
         self.padding = padding
+        self.height = height
         super.init(frame: .zero)
-        layer.cornerRadius = 25
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    override var intrinsicContentSize: CGSize {
-        return .init(width: 0, height: 50)
+        layer.cornerRadius = height / 2
+        backgroundColor = .white
     }
     
     override func textRect(forBounds bounds: CGRect) -> CGRect {
@@ -32,7 +29,11 @@ class CustomTextfield: UITextField {
         return bounds.insetBy(dx: padding, dy: 0)
     }
     
-    func setTextfieldStyle(placeHolder: String){
-        self.placeholder = placeHolder
+    override var intrinsicContentSize: CGSize {
+        return .init(width: 0, height: height)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

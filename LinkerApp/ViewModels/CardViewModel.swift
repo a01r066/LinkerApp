@@ -1,9 +1,9 @@
 //
 //  CardViewModel.swift
-//  LinkerApp
+//  SwipeMatchFirestoreLBTA
 //
-//  Created by Thanh Minh on 3/6/21.
-//  Copyright © 2021 Thanh Minh. All rights reserved.
+//  Created by Brian Voong on 11/5/18.
+//  Copyright © 2018 Brian Voong. All rights reserved.
 //
 
 import UIKit
@@ -12,31 +12,38 @@ protocol ProducesCardViewModel {
     func toCardViewModel() -> CardViewModel
 }
 
+// View Model is supposed represent the State of our View
 class CardViewModel {
+    // we'll define the properties that are view will display/render out
     let imageNames: [String]
-    let attributedText: NSAttributedString
+    let attributedString: NSAttributedString
     let textAlignment: NSTextAlignment
     
-    init(imageNames: [String], attributedText: NSAttributedString, textAlignment: NSTextAlignment) {
+    init(imageNames: [String], attributedString: NSAttributedString, textAlignment: NSTextAlignment) {
         self.imageNames = imageNames
-        self.attributedText = attributedText
+        self.attributedString = attributedString
         self.textAlignment = textAlignment
     }
     
     fileprivate var imageIndex = 0 {
-        didSet{
+        didSet {
             let imageName = imageNames[imageIndex]
             let image = UIImage(named: imageName)
             imageIndexObserver?(imageIndex, image)
         }
     }
+    
+    // Reactive Programming
     var imageIndexObserver: ((Int, UIImage?) -> ())?
     
-    func nextPhoto(){
+    func advanceToNextPhoto() {
         imageIndex = min(imageIndex + 1, imageNames.count - 1)
     }
     
-    func previousPhoto(){
+    func goToPreviousPhoto() {
         imageIndex = max(0, imageIndex - 1)
     }
 }
+
+// what exactly do we do with this card view model thing???
+
