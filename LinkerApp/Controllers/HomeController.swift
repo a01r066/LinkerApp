@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import JGProgressHUD
 
 class HomeController: UIViewController {
     
@@ -39,7 +40,10 @@ class HomeController: UIViewController {
     }
     
 //    var lastFetchedUser: User?
-//    var lastSnapshot: QueryDocumentSnapshot?
+    var users = [User]()
+    var lastDocumentSnapshot: DocumentSnapshot!
+    var fetchingMore = false
+    let hud = JGProgressHUD(style: .dark)
     fileprivate func fetchUserFromFirestore(){
 //        let query = Firestore.firestore().collection("users").whereField("profession", isEqualTo: "Teacher")
 //        let query = Firestore.firestore().collection("users").whereField("age", isLessThan: 36).whereField("age", isGreaterThan: 23)
@@ -60,43 +64,45 @@ class HomeController: UIViewController {
 //            })
 ////            self.setupFirestoreCardUsers()
 //        }
+        hud.detailTextLabel.text = "Fetching users..."
+        hud.show(in: view)
         
-        // // Construct query for first 2 users, ordered by fullName
+        fetchingMore = true
+        var query: Query!
         let db = Firestore.firestore()
-        let first = db.collection("users").order(by: "fullName").limit(to: 2)
         
-        first.addSnapshotListener { (firstSnapshot, err) in
+        if users.isEmpty {
+            query = db.collection("users").order(by: "fullName").limit(to: 2)
+            print("First 2 users loaded")
+        } else {
+            query = db.collection("users").order(by: "fullName").start(afterDocument: lastDocumentSnapshot).limit(to: 2)
+            print("Next 2 users loaded")
+        }
+        
+        query.getDocuments { (snapshot, err) in
             if let err = err {
-                print("Error retreving users", err.localizedDescription)
+                print("\(err.localizedDescription)")
+            } else if snapshot!.isEmpty {
+                self.fetchingMore = false
                 return
-            }
-            
-            guard let lastSnapshot = firstSnapshot?.documents.last else {
-                // The collection is empty.
-                return
-            }
-            
-            // Construct a new query starting after this document,
-            // retrieving the next 2
-            let next = db.collection("users").order(by: "fullName").start(afterDocument: lastSnapshot)
-            
-            // Use the query for pagination.
-            // ...
-            next.getDocuments { (snapshot, err) in
-                if let err = err {
-                    print(err.localizedDescription)
-                    return
+            } else {
+                let newUsers = snapshot!.documents.compactMap({User(uid: $0.documentID, dict: $0.data())})
+                
+                // display user
+                newUsers.forEach { (user) in
+                    self.setupCardFromUser(user: user)
                 }
                 
-                snapshot?.documents.forEach({ (docSnapshot) in
-//                    print(docSnapshot)
-                    let userDictionary = docSnapshot.data()
-                    let uid = docSnapshot.documentID
-                    let user = User(uid: uid, dict: userDictionary)
-//                    self.lastFetchedUser = user
-                    self.setupCardFromUser(user: user)
+                self.users.append(contentsOf: newUsers)
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+//                    self.tableView.reloadData()
+                    self.fetchingMore = false
                 })
+
+                self.lastDocumentSnapshot = snapshot!.documents.last
             }
+            self.hud.dismiss(animated: true)
         }
     }
     
@@ -141,8 +147,9 @@ class HomeController: UIViewController {
 
 extension HomeController: HomeBottomControlsStackViewDelegate {
     func handleRefresh() {
-        print("refresh")
-        fetchUserFromFirestore()
+        if !fetchingMore {
+            fetchUserFromFirestore()
+        }
     }
 }
 
