@@ -2,8 +2,8 @@
 //  ViewController.swift
 //  SwipeMatchFirestoreLBTA
 //
-//  Created by Brian Voong on 10/31/18.
-//  Copyright © 2018 Brian Voong. All rights reserved.
+//  Created by Thanh Minh on 10/31/18.
+//  Copyright © 2018 Thanh Minh. All rights reserved.
 //
 
 import UIKit
