@@ -14,7 +14,7 @@ class CardView: UIView {
     var cardViewModel: CardViewModel! {
         didSet {
             // accessing index 0 will crash if imageNames.count == 0
-            let imageURLString = cardViewModel.imageNames.first ?? ""
+            let imageURLString = cardViewModel.imageURLs.first ?? ""
             let imageURL = URL(string: imageURLString)
             if let imageURL = imageURL {
                 imageView.sd_setImage(with: imageURL)
@@ -22,7 +22,7 @@ class CardView: UIView {
             informationLabel.attributedText = cardViewModel.attributedString
             informationLabel.textAlignment = cardViewModel.textAlignment
             
-            (0..<cardViewModel.imageNames.count).forEach { (_) in
+            (0..<cardViewModel.imageURLs.count).forEach { (_) in
                 let barView = UIView()
                 barView.backgroundColor = barDeselectedColor
                 barsStackView.addArrangedSubview(barView)

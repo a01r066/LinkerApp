@@ -115,9 +115,19 @@ class HomeController: UIViewController {
     }
     
     @objc func handleSettings() {
-        print("Show registration page")
-        let registrationController = RegistrationController()
-        present(registrationController, animated: true)
+        if((Auth.auth().currentUser) != nil){
+            let settingsController = SettingsController()
+            settingsController.delegate = self
+            let navController = UINavigationController(rootViewController: settingsController)
+            navController.modalPresentationStyle = .fullScreen
+            present(navController, animated: true)
+        } else {
+            let registrationController = RegistrationController()
+            let navController = UINavigationController(rootViewController: registrationController)
+            navController.modalPresentationStyle = .fullScreen
+            present(navController, animated: true)
+        }
+        
     }
     
     fileprivate func setupFirestoreCardUsers() {
@@ -145,7 +155,12 @@ class HomeController: UIViewController {
     }
 }
 
-extension HomeController: HomeBottomControlsStackViewDelegate {
+extension HomeController: HomeBottomControlsStackViewDelegate, SettingsControllerDelegate {
+    func handleReload(user: User) {
+        print("Handle reload user")
+        handleRefresh()
+    }
+    
     func handleRefresh() {
         if !fetchingMore {
             fetchUserFromFirestore()

@@ -35,8 +35,8 @@ class RegistrationController: UIViewController {
         button.setTitleColor(.black, for: .normal)
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(handleSelectPhoto), for: .touchUpInside)
-        button.imageView?.contentMode = .scaleAspectFill
         button.clipsToBounds = true
+        button.imageView?.contentMode = .scaleAspectFit
         return button
     }()
     
@@ -119,7 +119,6 @@ class RegistrationController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         setupGradientLayer()
         setupLayout()
         setupNotificationObservers()

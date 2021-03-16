@@ -15,14 +15,18 @@ struct User: ProducesCardViewModel {
     var name: String?
     var age: Int?
     var profession: String?
-    var imageURL1: String?
+    var imageURLs: [String]?
+    var bio: String?
+    var ageRanges: [String : Any]?
     
     init(uid: String, dict: [String:Any]){
         self.uid = uid
-        self.name = dict["fullName"] as? String ?? ""
+        self.name = dict["fullName"] as? String ?? "Fullname"
         self.age = dict["age"] as? Int ?? -1
-        self.profession = dict["profession"] as? String ?? ""
-        self.imageURL1 = dict["imageURL1"] as? String ?? ""
+        self.profession = dict["profession"] as? String ?? "Job Title"
+        self.imageURLs = dict["imageURLs"] as? [String] ?? [Constants.DEFAULT_IMAGE_URL]
+        self.bio = dict["bio"] as? String ?? "Biography"
+        self.ageRanges = dict["ageRanges"] as? [String : Any] ?? ["minAge": 18, "maxAge": 65]
     }
     
     func toCardViewModel() -> CardViewModel {
@@ -33,7 +37,7 @@ struct User: ProducesCardViewModel {
         let professionString = (profession != nil) ? profession! : "N/A"
         attributedText.append(NSAttributedString(string: "\n\(professionString)", attributes: [.font: UIFont.systemFont(ofSize: 20, weight: .regular)]))
 
-        return CardViewModel(imageNames: [imageURL1 ?? ""], attributedString: attributedText, textAlignment: .left)
+        return CardViewModel(imageURLs: imageURLs ?? [""], attributedString: attributedText, textAlignment: .left)
     }
 }
 
